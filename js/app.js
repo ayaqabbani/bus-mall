@@ -108,7 +108,6 @@ function clickHandler(event){
     }
 }
 if (votingSession===0){
-    alert('ilove you');
     createResultButton();
     imageSection.removeEventListener('click',clickHandler);
 }
@@ -119,11 +118,11 @@ render();
 
 imageSection.addEventListener('click',clickHandler);
 function createResultButton(){
-    alert('ilove you');
     let button = document.createElement('button');
     button.textContent= "show results";
     button.addEventListener ("click",showResult)
-  resultSection.appendChild(button);
+    resultSection.appendChild(button);
+    createChart();
  
 }
 
@@ -134,3 +133,42 @@ function resultsButtonHandler(){
 
 doRender();
 render();
+
+function createChart(){
+    let context = document.getElementById('chart').getContext('2d');
+    // let getGoatsNames=[];
+    // let getGoatsVotes=[];
+  
+    // for(let i=0;i<Goat.all.length;i++){
+    //   getGoatsNames.push(Goat.all[i].name);
+    // }
+    // for(let i=0;i<Goat.all.length;i++){
+    //   getGoatsVotes.push(Goat.all[i].votes);
+    // }
+    let chartObject={
+      // The type of chart we want to create
+      type: 'bar',
+      // The data for our dataset
+      data: {
+          labels:['apple','strawberry','melon'],
+          datasets: [{
+              label: 'Goats voting results',
+              backgroundColor: 'rgb(100, 99, 132)',
+              borderColor: 'rgb(255, 99, 132)',
+              data: [23,34,44]
+          }
+        ]
+      },
+  
+      // Configuration options go here
+      options: {
+        scales: {
+          xAxes: [{
+              barPercentage: 0.4
+          }]
+      }
+      }
+  }
+    let chart = new Chart(context,chartObject);
+    
+  }
