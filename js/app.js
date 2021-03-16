@@ -35,20 +35,10 @@ function Shop(name,imgExt){
     this.path=`./img/${name}.${imgExt}`;
 }
 
-let shopArray=[];
 
-function randomNumber(min,max){
-    return Math.floor(Math.random() * (max - min +1)) + min
-}
-let viewsList=[];
-function constructProductImage(image){
-    let index = randomNumber(0,shopArray.length-1);
-    let selectedShop = shopArray[index];
-    shopArray[index].views++;
-    image.src = selectedShop.path;
-    image.title = selectedShop.name;
-    image.alt = selectedShop.name;
-}
+
+
+let shopArray=[];
 
 function doRender() {
     for (let i=0;i<products.length;i++){
@@ -65,9 +55,65 @@ function doRender() {
        let shop = new Shop(productName,path);
        shopArray[i] = shop;
     }
-
-    render();
 }
+
+doRender();
+
+function randomNumber(min,max){
+    return Math.floor(Math.random() * (max - min +1)) + min
+}
+let viewsList=[];
+let lastImg = [" "," "," "];
+function constructProductImage(image1,image2,image3){
+    let index1 = randomNumber(0,shopArray.length-1);
+    let index2 = randomNumber(0,shopArray.length-1);
+    let index3 = randomNumber(0,shopArray.length-1);
+   
+    let y = 0;
+    while(y < 1){
+        if(lastImg.includes(shopArray[index1].name)){
+            index1 = randomNumber(0,shopArray.length-1);
+        }else{
+            shopArray[index1].views ++;
+            lastImg[0] = shopArray[index1].name;
+            image1.setAttribute('src',shopArray[index1].path);
+            image1.setAttribute('title' , shopArray[index1].name);
+            y = 1;
+        }
+    }
+
+    
+    let x = 0;
+
+    while(x < 1){
+        if(lastImg.includes(shopArray[index2].name) || index2 === index1){
+            index2 = randomNumber(0,shopArray.length-1);
+        }else{
+            shopArray[index2].views ++;
+            lastImg[1] = shopArray[index2].name;
+            image2.setAttribute('src',shopArray[index2].path);
+            image2.setAttribute('title' , shopArray[index2].name);
+            x = 1;
+        }
+    }
+
+    let z = 0;
+
+    while(z < 1){
+        if(lastImg.includes(shopArray[index3].name) || index3 === index2 || index3 === index1){
+            index3 = randomNumber(0,shopArray.length-1);
+        }else{
+            shopArray[index3].views ++;
+            lastImg[2] = shopArray[index3].name;
+            image3.setAttribute('src',shopArray[index3].path);
+            image3.setAttribute('title' , shopArray[index3].name);
+            z = 1;
+        }
+    }
+}
+
+
+
 let resultSection = document.getElementById('aya');
 
 function showResult() {
@@ -80,11 +126,10 @@ function showResult() {
        }
     resultSection.appendChild(list);
 }
-let votingSession = 25
+let votingSession = 25;
 function render() {
-    constructProductImage(leftImage);
-    constructProductImage(centerImage);
-    constructProductImage(rightImage);
+    constructProductImage(leftImage,centerImage,rightImage);
+    
     counter++;
    
 }
@@ -131,40 +176,49 @@ function resultsButtonHandler(){
 }
 
 
-doRender();
+
 render();
+
 
 function createChart(){
     let context = document.getElementById('chart').getContext('2d');
-    // let getGoatsNames=[];
-    // let getGoatsVotes=[];
+    let getProductNames=[];
+    let getProductVotes=[];
+    let getProductsViews=[];
   
-    // for(let i=0;i<Goat.all.length;i++){
-    //   getGoatsNames.push(Goat.all[i].name);
-    // }
-    // for(let i=0;i<Goat.all.length;i++){
-    //   getGoatsVotes.push(Goat.all[i].votes);
-    // }
+    for(let i=0;i<shopArray.length;i++){
+      getProductNames.push(shopArray[i].name);
+    }
+    for(let i=0;i<shopArray.length;i++){
+      getProductVotes.push(shopArray[i].votes);
+    }
+    for(let i=0;i<shopArray.length;i++){
+        getProductsViews.push(shopArray[i].views);
+      }
     let chartObject={
-      // The type of chart we want to create
-      type: 'bar',
-      // The data for our dataset
+      type:'horizontalBar',
       data: {
-          labels:['apple','strawberry','melon'],
+          labels:getProductNames,
           datasets: [{
-              label: 'Goats voting results',
-              backgroundColor: 'rgb(100, 99, 132)',
-              borderColor: 'rgb(255, 99, 132)',
-              data: [23,34,44]
-          }
-        ]
+              label: 'products voting',
+              backgroundColor: '#205a57',
+              borderColor: '#205a57',
+              data: getProductsViews
+          },
+        
+         {
+            label: 'products views',
+       backgroundColor: '#f1f1f1',
+       borderColor: '#205a57',
+       data:getProductVotes
+   }
+          ]
       },
   
-      // Configuration options go here
       options: {
         scales: {
           xAxes: [{
-              barPercentage: 0.4
+              barPercentage: 0.6
           }]
       }
       }
